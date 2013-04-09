@@ -8,6 +8,8 @@
 #include "filetype.h"
 #include <QDebug>
 #include <QPushButton>
+#include "iconpushbutton.h"
+#include <QMessageBox>
 
 typedef struct{
     QList<APP *> running;
@@ -36,6 +38,8 @@ public:
 public slots:
     //bool update_app(APP_COM app);
     //bool update_apps_list(QList<APP_COM> apps);
+    bool iconClick(void *ptr);
+    bool appProcessChanged(QProcess::ProcessState newState);
 signals:
     //execObCmd(APP_COM app);
 
@@ -46,6 +50,8 @@ private:
     SCREEN main;
     SCREEN extend;
     QList<APP *> apps;
+
+    bool setSelfLayer(void);
 };
 
 #endif // APPMANAGER_H

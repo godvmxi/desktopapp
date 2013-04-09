@@ -1,5 +1,6 @@
 #include "desktopapp.h"
 #include "ui_desktopapp.h"
+#include "iconpushbutton.h"
 
 DesktopApp::DesktopApp(QWidget *parent) :
     QMainWindow(parent),
@@ -23,6 +24,11 @@ DesktopApp::DesktopApp(QWidget *parent) :
     ui->setupUi(this);
     AppManager *appManager = new AppManager(this,apps);
     appManager->setGeometry(500,500,1000,300);
+
+
+    IconPushButton *test = new IconPushButton(this,NULL);
+    test->setGeometry(20,20,100,100);
+
 
 
 }
