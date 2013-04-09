@@ -43,16 +43,21 @@ typedef struct{
     bool undecorate;
     bool min;
     int layer;
+    QString state;
+    QString error;
 }APP_COM;
 
 typedef struct{
     int sequence;
-    QProcess *pro;
-    APP_COM info;
+    QProcess *process;
+
     ICONS icons;
     QString name;
     QString cmd;
     QString para;
+
+    APP_COM info;
+
 
 }APP_INFO;
 
@@ -60,8 +65,8 @@ typedef struct{
     QString name;
     QString cmd;
     int max_run;
-    APP_INFO run_1;
-    APP_INFO run_2;
+    APP_INFO run_main;
+    APP_INFO run_extend;
 }APP;
 
 

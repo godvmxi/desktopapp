@@ -60,10 +60,14 @@ bool AppManager::setAppList(QList<APP> apps ,int size)
         *tmp = apps.at(i);
 
         tmp->max_run = 1;
-        tmp->run_1.process = NULL;
-        tmp->run_2.process = NULL;
-        memset(&(tmp->run_1.info),0,sizeof(APP_COM));
-        memset(&(tmp->run_2.info),0,sizeof(APP_COM));
+        tmp->run_main.process = new QProcess();
+        //tmp->run_extend.process = new QProcess();
+        //tmp->run_extend.process->setProcessChannelMode(QProcess::MergedChannels);
+        tmp->run_main.process->setProcessChannelMode(QProcess::MergedChannels);
+        //connect(tmp->run_extend.process,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(appProcessChanged(QProcess::ProcessState)));
+        connect(tmp->run_main.process,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(appProcessChanged(QProcess::ProcessState)));
+        memset(&(tmp->run_main.info),0,sizeof(APP_COM));
+        memset(&(tmp->run_extend.info),0,sizeof(APP_COM));
         this->apps.append(tmp);
     }
     return true;
@@ -71,27 +75,25 @@ bool AppManager::setAppList(QList<APP> apps ,int size)
 bool AppManager::iconClick(void *ptr)
 {
     QString msg ;
-    APP *appButton = (APP *)ptr;
-    APP *app;
-    msg.sprintf("from button ->%d",appButton->max_run);
+    APP *app = (APP *)ptr;
+    msg.sprintf("from button ->%d",app->max_run);
     ui->label_status->setText(msg);
 
-    if(appButton->run_1.process != NULL)
+
+    QProcess::ProcessState now =  app->run_main.process->state();
+    switch(now)
     {
-        return false;
+    case QProcess::Starting :
+        qDebug()<<"just wait ....";
+        break;
+    case QProcess::Running :
+        showRunningApp(app);
+        break;
+    case QProcess::NotRunning:
+        startAppFromButton(app);
+        break;
+
     }
-    else
-    {
-        appButton->run_1.process = new QProcess();
-        appButton->run_1.process->setProcessChannelMode(QProcess::MergedChannels);
-
-
-        connect(appButton->run_1.process,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(appProcessChanged(QProcess::ProcessState)));
-        appButton->run_1.process->start(appButton->cmd);
-        qDebug()<<"create pid ->"<<appButton->run_1.process->pid();
-        return true;
-    }
-
 }
 bool AppManager::setSelfLayer(void)
 {
@@ -101,13 +103,27 @@ bool AppManager::setSelfLayer(void)
 bool AppManager::appProcessChanged(QProcess::ProcessState newState)
 {
     QProcess *src = dynamic_cast<QProcess*>(sender());
+    APP *app;
     qDebug()<<"process new state"<<newState<<" src->"<<src->pid();
     switch(newState){
     case QProcess::NotRunning:
-        src->kill();
-        src->terminate();
+        //src->kill();
+        //src->terminate();
         //qDebug()<<"fuck";
         qDebug()<<"process kill state"<<newState<<" src->"<<src->pid();
+        foreach(app,this->apps)
+        {
+            //if(app->run_main.process == src)
+            //{
+                //delete app->run_main.process;
+                //app->run_main.process = NULL;
+                //disconnect(src,SIGNAL(stateChanged(QProcess::ProcessState)),this,SLOT(appProcessChanged(QProcess::ProcessState)));
+                //delete src;
+                //qDebug()<<"delete process";
+                return true;
+            //}
+        }
+
         //delete src;
 
 
@@ -122,4 +138,21 @@ bool AppManager::appProcessChanged(QProcess::ProcessState newState)
     }
 
     return true;
+}
+bool AppManager::showRunningApp(APP *app)
+{
+
+}
+
+bool AppManager::startAppFromButton(APP *app)
+{
+    app->run_main.process->start(app->cmd);
+    qDebug()<<"create pid ->"<<app->run_main.process->pid();
+    app->run_main.info.pid = app->run_main.process->pid();
+    return true;
+}
+bool AppManager::setHomeButton(void)
+{
+
+
 }

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "appmanager.h"
 #include <QLineEdit>
+#include <QMovie>
 
 namespace Ui {
     class DesktopApp;

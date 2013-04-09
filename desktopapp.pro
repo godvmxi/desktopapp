@@ -12,11 +12,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         desktopapp.cpp \
-    appmanager.cpp
+    appmanager.cpp \
+    iconpushbutton.cpp
 
 HEADERS  += desktopapp.h \
     appmanager.h \
-    filetype.h
+    filetype.h \
+    iconpushbutton.h
 
 FORMS    += desktopapp.ui \
     appmanager.ui

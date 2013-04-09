@@ -51,7 +51,11 @@ private:
     SCREEN extend;
     QList<APP *> apps;
 
+    QWidget *home;
+
     bool setSelfLayer(void);
+    bool showRunningApp(APP *app);
+    bool startAppFromButton(APP *app);
 };
 
 #endif // APPMANAGER_H
